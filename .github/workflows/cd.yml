@@ -20,11 +20,6 @@ jobs:
         with:
           go-version: "1.25.1"
 
-
-      - name: Install goose
-        run: go install github.com/pressly/goose/v3/cmd/goose@latest
-
-
       - name: Build app
         run: ./scripts/buildprod.sh
 
@@ -58,11 +53,25 @@ jobs:
 
       - name: Check DATABASE_URL present
         run: |
-        if [ -z "${DATABASE_URL}" ]; then echo "DATABASE_URL is empty"; exit 1; else echo "DATABASE_URL present"; fi
+          if [ -z "${DATABASE_URL}" ]; then
+          echo "DATABASE_URL is empty"
+          exit 1
+          else
+          echo "DATABASE_URL present"
+          fi
 
 
-      - name: Run DB migrations
-        run: ./scripts/migrateup.sh
+      - name: Install Turso CLI
+        run: curl -sSfL https://get.tur.so/install.sh | sh -s -- -y
+
+
+      - name: Run DB migrations (Turso)
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.DATABASE_AUTH_TOKEN }}
+        run: |
+          turso db shell "$TURSO_DATABASE_URL" --enable-auth --auth-token "$TURSO_AUTH_TOKEN" < sql/schema/001_users.sql
+          turso db shell "$TURSO_DATABASE_URL" --enable-auth --auth-token "$TURSO_AUTH_TOKEN" < sql/schema/002_notes.sql
 
 
       - name: Deploy to Cloud Run
