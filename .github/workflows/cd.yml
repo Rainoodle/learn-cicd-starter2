@@ -62,8 +62,9 @@ jobs:
 
 
       - name: Install Turso CLI
-        run: curl -sSfL https://get.tur.so/install.sh | sh -s -- -y
-
+        run: |
+          curl -sSfL https://get.tur.so/install.sh | sh -s -- -y
+          echo "$HOME/.turso/bin" >> $GITHUB_PATH
 
       - name: Run DB migrations (Turso)
         env:
