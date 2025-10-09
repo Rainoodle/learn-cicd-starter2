@@ -64,7 +64,16 @@ jobs:
       - name: Install Turso CLI
         run: |
           curl -sSfL https://get.tur.so/install.sh | sh -s -- -y
-          echo "$HOME/.turso/bin" >> $GITHUB_PATH
+          if [ -x "$HOME/.turso/bin/turso" ]; then
+            echo "$HOME/.turso/bin" >> $GITHUB_PATH
+          elif [ -x "$HOME/.local/bin/turso" ]; then
+            echo "$HOME/.local/bin" >> $GITHUB_PATH
+          else
+            echo "Turso binary not found after install"; exit 1
+          fi
+          which turso || true
+          turso --version || true
+
 
       - name: Run DB migrations (Turso)
         env:
