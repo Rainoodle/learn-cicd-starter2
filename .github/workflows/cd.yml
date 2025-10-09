@@ -25,7 +25,7 @@ jobs:
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }} # or hardcode your project ID
+          project_id: notely-474509 # or hardcode your project ID
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
 
