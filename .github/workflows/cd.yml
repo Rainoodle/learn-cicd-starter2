@@ -30,6 +30,12 @@ jobs:
           export_default_credentials: true
 
 
+      - name: Verify auth
+        run: |
+          gcloud auth list
+          gcloud config list account project
+
+
       - name: Verify gcloud
         run: gcloud --version
 
